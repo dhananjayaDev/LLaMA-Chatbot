@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mangalam Chatbot 💍</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(145deg, #f2f2f2, #d9d9d9);
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .chat-container {
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      border-radius: 20px;
+      max-width: 600px;
+      width: 100%;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      height: 90vh;
+    }
+    h1 {
+      text-align: center;
+      font-size: 1.8rem;
+      color: #E66C37;
+      margin-bottom: 20px;
+    }
+    .chat-box {
+      flex-grow: 1;
+      overflow-y: auto;
+      padding-right: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .message {
+      max-width: 80%;
+      padding: 12px 16px;
+      border-radius: 18px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+    .user {
+      align-self: flex-end;
+      background: #DFF0FF;
+      color: #111;
+    }
+    .bot {
+      align-self: flex-start;
+      background: #FFEAEA;
+      color: #111;
+    }
+    .input-box {
+      display: flex;
+      margin-top: 20px;
+    }
+    textarea {
+      flex-grow: 1;
+      resize: none;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+    }
+    button {
+      background-color: #E66C37;
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      margin-left: 10px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    button:hover {
+      background-color: #cf5d2c;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <h1>Mangalam Chatbot 💍</h1>
+    <div class="chat-box" id="chat-box"></div>
+    <div class="input-box">
+      <textarea id="question" rows="2" placeholder="Type your question here..."></textarea>
+      <button onclick="askQuestion()">Ask</button>
+    </div>
+  </div>
+
+  <script>
+    async function askQuestion() {
+      const questionInput = document.getElementById("question");
+      const question = questionInput.value.trim();
+      if (!question) return;
+
+      appendMessage(question, "user");
+      questionInput.value = "";
+
+      const response = await fetch("/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question })
+      });
+
+      const data = await response.json();
+      appendMessage(data.answer, "bot");
+    }
+
+    function appendMessage(message, sender) {
+      const chatBox = document.getElementById("chat-box");
+      const div = document.createElement("div");
+      div.className = `message ${sender}`;
+      div.innerHTML = message;
+      chatBox.appendChild(div);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+  </script>
+</body>
+</html>
